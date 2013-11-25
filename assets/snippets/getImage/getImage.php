@@ -3,9 +3,9 @@
 Добавить снипет getImage следующего содержания :
 
 <?php
-// Script Name: GetImage Class (modx evo 1.xx)
+// Script Name: GetImage version 2.1 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 04.06.2013
+// Last Modified: 03.08.2013
 // Autor: Swed <webmaster@collection.com.ua>
 // Purpose: Get image (adress) for document from tv params, content, or other
 
@@ -31,11 +31,14 @@
 //  [[getImage? &field=`anotation`]] - использовать другое поле
 //  [[getImage? &tv=`image,photos` &data=`<img src="/images/no_image.jpg" atl="" />` $parseData=`1`]] Использовать альтернативный html если в остальных не найдено
 //  [[getImage? &tv=`image,photos` &data=`/images/no_image.jpg` ]] Использовать адрес изображения если в остальных не найдено
-//  [[getImage? &id=`32` &tv=`photos=rand;0,image` ]] Получить случайное из multiphoto, если нет то из image или из документа
-//  [[getImage? &id=`32` &tv=`image,photos` &rand=`1` &data=`/images/image.jpg`  ]] Случайное из всего списка: &data, tv, content
-//  [[getImage? &id=`32` &tv=`image,photos=rand;0` &rand=`1` &data=`/images/image.jpg`  ]] тоже самое
-//  [[getImage? &id=`32` &tv=`image, photos=0;1` &order=`document,tv` ]] Сначала искать в контенте, а потом в TV. Для мультифото photo использовать большую картинку
 //  [[getImage? &id=`32` &tv=`image, photos` &save=`myplace` ]] Сохранить результат в плейсхолдер [+myplace+], не выдавая его
+//  [[getImage? &id=`32` &tv=`image,photos` &rand=`1` &data=`/images/image.jpg`  ]] Случайное из всего списка: &data, tv, content
+//  [[getImage? &id=`32` &tv=`image, photos=0;1` &order=`document,tv` ]] Сначала искать в контенте, а потом в TV. Для мультифото photo использовать первую большую картинку
+//  [[getImage? &id=`32` &tv=`photos=rand;0,image` ]] Получить случайное из multiphoto, если нет то из image или из документа
+//  [[getImage? &id=`32` &tv=`image,photos=rand;0` &rand=`1` &data=`/images/image.jpg`  ]] Случайное, для мультифото - случайное из 1го поля (маленькая)
+//  [[getImage? &id=`32` &tv=`image,photos=rand:0=/name/i;0` &rand=`1` &data=`/images/image.jpg`  ]] тоже самое, но с условием, что в этом поле есть "name" (regexp)
+//  [[getImage? &id=`32` &tv=`image,photos=rand:2=/картинка/i;0` &rand=`1` &data=`/images/image.jpg`  ]] -- с условием, что в названии (3е поле) есть "картинка" (regexp)
+//  [[getImage? &id=`32` &tv=`image,photos=rand:2=Слайд;0` &rand=`1` &data=`/images/image.jpg`  ]] -- с условием, что название равно "Слайд"
 
 if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getImage/getImage.php")) {
  include_once($includeFile);
@@ -91,20 +94,11 @@ class getImage {
   $this->p=&$p;
   if (!is_array($p["order"])) {
    $p["order"] = preg_split("/\s*,\s*/",$p["order"],-1,PREG_SPLIT_NO_EMPTY);
-//   foreach($p["order"] as $k =>$v) if (!in_array($v,$pd["order"])) unset($p["order"][$k]); // remove unknown
    foreach($pd["order"] as $v) if (!in_array($v,$p["order"])) $p["order"][] = $v; // add default
   }
   if ($p["rand"]) $p["all"] = true;
   $this->isCurrent = $p["id"] === $modx->documentObject['id'];
-
-//echo "<pre>";
-//  print_r($p);
-//  print_r($this);
-
   foreach($p["order"] as $o) {
-
-//echo "<p> ".$p['id']." case $o :\n";
-
     switch ($o) {
      case "tv":
       if (strpos($p["tv"],"=")) $this->extendTv = true;
@@ -116,12 +110,9 @@ class getImage {
         $this->extendTv[$t[0]] = !empty($t[1])?preg_split("/\s*;\s*/",$t[1],-1,PREG_SPLIT_NO_EMPTY):"";
        }
        $p["tv"] = array_keys($this->extendTv);
-//print_r($p["tv"]);
-//print_r($this->extendTv);
       }
       $tvs = array(); // name => value
       if ( !$this->isCurrent) foreach ((array)$modx->getTemplateVars($p["tv"], "name", $p["id"]) as $d) $tvs[$d["name"]] = $d["value"];
-//print_r($tvs);
       foreach ($p["tv"] as $tvField) {
        if ($this->isCurrent) $tvs[$tvField] = $modx->documentObject[$tvField][1];
        if ($data = $this->exTv($tvField,$tvs[$tvField])) {
@@ -143,32 +134,24 @@ class getImage {
        }
        if ($data = $this->parseData($data)) $this->result[] = $data;
       }
-//echo (($this->result and !$p["all"]) ? 2 : 1). " ????  $data" ;
      break ($this->result and !$p["all"]) ? 2 : 1;
      case "data":
       if (!empty($p["data"]) and ($data = $p["parseData"]?$this->parseData($p["data"]):$p["data"])) {
        $this->result[] = $data;
       }
-//echo (($this->result and !$p["all"]) ? 2 : 1). " ???? $data" ;
-
      break ($this->result and !$p["all"]) ? 2 : 1;
      default:       // default actions
     }
   }
  }
 
-
  function result() {
   if (!$this->p["rand"] or count($this->result) <=1) $result = reset($this->result);
   else if ($this->p["rand"]) $result = $this->result[rand(0,count($this->result)-1)];
   else if ($this->p["all"])
    $result = implode($this->p["urlOnly"]?"":",",$this->result);
-
-//  if (!$this->p["save"])
    return $result;
-//  else $modx->setPlaceholder($this->p["save"], $result);
  }
-
 
  function parseData($data="") {
   $p=&$this->p;
@@ -185,19 +168,29 @@ class getImage {
    $o = !empty($o) ? $o: array($this->p["all"]?"all":"0","0");
    if (!is_array($o)) $o = preg_split("/\s*;\s*/",$o);
    if (!isset($o[1])) $o[1] = 0;
-   if (!empty($o[0]) and strtolower($o[0])=="rand") {
+   if (substr(strtolower($o[0]),0,4)=="rand") {
+    if (preg_match("/^rand:(\d+)=(.*)$/i",$o[0],$m)) { // Условие для случайно выборки. Проверка по номеру элемента n=Значение(регулярное выражение)
+      $nA = array();
+      if (preg_match("/^\/.*\/\w*$/",$m[2])) { // check by regexp
+       foreach ($trJson as $k => $a) if (preg_match($m[2],$a[$m[1]])) $nA[] = $trJson[$k];
+      } else {
+       foreach ($trJson as $k => $a) if ($a[$m[1]]==$m[2]) $nA[] = $trJson[$k];
+      }
+      if ($nA) {$trJson = $nA;unset($nA);}
+      $o[0] = rand(0,count($trJson)-1);
+    }
     $o[0] = rand(0,count($trJson)-1);
    } else
    if (strtolower($o[0])=="all") {
     $collect = array();
     foreach ($trJson as &$v) $collect[] = $v[$o[1]];
     return $collect;
-   }
+   } else
+    $o[0] = (int)$o[0];
    return $trJson[$o[0]][$o[1]];
   }
   return $data;
  }
-
 
 }
 ?>
