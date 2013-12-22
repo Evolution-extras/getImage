@@ -1,4 +1,17 @@
 //<?php
+/**
+ * getImage
+ *
+ * Получить изображение (адрес) для ресурса из tv параметров, контента (или другого поля)
+ *
+ * @category 	snippet
+ * @version 	1.0
+ * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+ * @internal	@properties
+ * @internal	@modx_category Utils
+ * @internal	@installset base, sample
+ */
+
 // Script Name: GetImage version 2.3 (modx evo 1.xx)
 // Creation Date: 30.05.2013
 // Last Modified: 21.11.2013
@@ -52,7 +65,7 @@ if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getIm
      "order"     => isset($order)?$order:"",
      "rand"      => isset($rand)?$rand:"",
      "all"       => isset($all)?$all:"",
-     "out"       => isset(out)?out:"%s",
+     "out"       => isset($out)?$out:"%s",
   ));
   if (empty($save)) return $getImage->result();
   else $modx->setPlaceholder($save, $getImage->result());
@@ -62,4 +75,4 @@ if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getIm
 } else {
  return "Required file $includeFile don't exists";
 }
-?>
+//?>
