@@ -3,9 +3,9 @@
 Добавить снипет getImage следующего содержания :
 
 <?php
-// Script Name: GetImage version 2.3 (modx evo 1.xx)
+// Script Name: GetImage version 2.4 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 21.11.2013
+// Last Modified: 17.01.2014
 // Autor: Swed <webmaster@collection.com.ua>
 // Purpose: Get image (address) for document from tv params, content, or other
 
@@ -25,6 +25,7 @@
 //  &all       =  false             // обработать все (станет true если rand true), при rand false выведе все (при ulrOnly=true через запятую)
 //  &save      =  ""                // не возвращать, сохранить в указанный плейсхолдер
 //  &out       = "%s"               // Вернуть в формате. %s - будет заменено на полученный результат [2.2]
+//  &fullUrl   = "false"            // Использовать полный адрес изображения, если расположен локально [2.4]
 
 // Примеры:
 //  [[getImage]] - Получить для текущего документа из контента
@@ -56,7 +57,8 @@ if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getIm
      "order"     => isset($order)?$order:"",
      "rand"      => isset($rand)?$rand:"",
      "all"       => isset($all)?$all:"",
-     "out"       => isset(out)?out:"%s",
+     "out"       => isset($out)?$out:"%s",
+     "fullUrl"   => isset($fullUrl)?$fullUrl:false,
   ));
   if (empty($save)) return $getImage->result();
   else $modx->setPlaceholder($save, $getImage->result());
@@ -73,7 +75,7 @@ class getImage {
  var $p;
  var $result = array();
 
- function getImage($p = array()) {
+ function __construct($p = array()) {
   global $modx;
   $pd = array(
    "id"        => $modx->documentObject['id'],
@@ -87,6 +89,7 @@ class getImage {
    "rand"      => false,
    "all"       => false,
    "out"       => "%s",
+   "fullUrl"   => isset($fullUrl)?$fullUrl:false,
   );
   foreach ($pd as $k=>$v) if (!isset($p[$k])) $p[$k] = $v;
   $this->p=&$p;
@@ -144,6 +147,11 @@ class getImage {
  }
 
  function result() {
+  if ($this->p["fullUrl"] and $this->p["urlOnly"]) {
+   foreach ($this->result as &$data)
+    if (!preg_match("/^(http|ftp|data):/",$data))
+     $data = "http://".$_SERVER['SERVER_NAME']."/".preg_replace("/^\//","",$data);
+  }
   if (!$this->p["rand"] or count($this->result) <=1) $result = reset($this->result);
   else if ($this->p["rand"]) $result = $this->result[rand(0,count($this->result)-1)];
   else if ($this->p["all"])
@@ -154,8 +162,8 @@ class getImage {
  function parseData($data="") {
   $p=&$this->p;
   if (($p["urlOnly"] and preg_match("/<img[^>]+src=[\"']([^\"']+)[\"']/i",$data,$m))
-     or  (!$p["urlOnly"] and preg_match("/(<img[^>]+>)/i",$data,$m)))
-    return $m[1];
+      or  (!$p["urlOnly"] and preg_match("/(<img[^>]+>)/i",$data,$m)))
+   return $m[1];
   else return "";
  }
 

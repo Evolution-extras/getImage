@@ -5,16 +5,16 @@
  * Получить изображение (адрес) для ресурса из tv параметров, контента (или другого поля)
  *
  * @category 	snippet
- * @version 	1.0
+ * @version 	2.4
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @internal	@properties
  * @internal	@modx_category Utils
  * @internal	@installset base, sample
  */
 
-// Script Name: GetImage version 2.3 (modx evo 1.xx)
+// Script Name: GetImage version 2.4 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 21.11.2013
+// Last Modified: 17.01.2014
 // Autor: Swed <webmaster@collection.com.ua>
 // Purpose: Get image (address) for document from tv params, content, or other
 
@@ -34,6 +34,7 @@
 //  &all       =  false             // обработать все (станет true если rand true), при rand false выведе все (при ulrOnly=true через запятую)
 //  &save      =  ""                // не возвращать, сохранить в указанный плейсхолдер
 //  &out       = "%s"               // Вернуть в формате. %s - будет заменено на полученный результат [2.2]
+//  &fullUrl   = "false"            // Использовать полный адрес изображения, если расположен локально [2.4]
 
 // Примеры:
 //  [[getImage]] - Получить для текущего документа из контента
@@ -66,7 +67,8 @@ if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getIm
      "rand"      => isset($rand)?$rand:"",
      "all"       => isset($all)?$all:"",
      "out"       => isset($out)?$out:"%s",
-  ));
+     "fullUrl"   => isset($fullUrl)?$fullUrl:false,
+                           ));
   if (empty($save)) return $getImage->result();
   else $modx->setPlaceholder($save, $getImage->result());
  } else {
