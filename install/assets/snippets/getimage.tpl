@@ -77,4 +77,3 @@ if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getIm
 } else {
  return "Required file $includeFile don't exists";
 }
-//?>
