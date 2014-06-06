@@ -42,7 +42,7 @@
 //  [[getImage? &id=`32` &tv=`image,photos=rand:0=/name/i;0` &rand=`1` &data=`/images/image.jpg`  ]] тоже самое, но с условием, что в этом поле есть "name" (regexp)
 //  [[getImage? &id=`32` &tv=`image,photos=rand:2=/картинка/i;0` &rand=`1` &data=`/images/image.jpg`  ]] -- с условием, что в названии (3е поле) есть "картинка" (regexp)
 //  [[getImage? &id=`32` &tv=`image,photos=rand:2=Слайд;0` &rand=`1` &data=`/images/image.jpg`  ]] -- с условием, что название равно "Слайд"
-
+//  <meta property="og:image" content="[[getImage? &tv=`image` &id=`[*id*]` &fullUrl=`1` ]]" />  -- Вывести полную ссылку для локального изображения
 if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getImage/getImage.php")) {
  include_once($includeFile);
  if (class_exists("getImage")) {
