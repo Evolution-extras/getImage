@@ -7,6 +7,7 @@
  * @category 	snippet
  * @version 	2.4
  * @license 	http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
+ * @author 	Sergey Davydov <webmaster@sdcollection.com>
  * @internal	@properties
  * @internal	@modx_category Utils
  * @internal	@installset base, sample
@@ -14,7 +15,7 @@
 
 // Script Name: GetImage version 2.4 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 17.01.2014
+// Last Modified: 26.06.2014
 // Autor: Swed <webmaster@collection.com.ua>
 // Purpose: Get image (address) for document from tv params, content, or other
 

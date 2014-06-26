@@ -5,8 +5,8 @@
 <?php
 // Script Name: GetImage version 2.4 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 17.01.2014
-// Autor: Swed <webmaster@collection.com.ua>
+// Last Modified: 26.06.2014
+// Autor: Sergey Davydov <webmaster@sdcollection.com>
 // Purpose: Get image (address) for document from tv params, content, or other
 
 // Получить изображение (адрес) для ресурса из tv параметров, контента (или другого поля)

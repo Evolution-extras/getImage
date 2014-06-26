@@ -6,8 +6,8 @@ Add snippet getImage
 ```
 // Script Name: GetImage version 2.4 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 17.01.2014
-// Autor: Swed <webmaster@collection.com.ua>
+// Last Modified: 26.06.2014
+// Autor: Sergey Davydov <webmaster@sdcollection.com>
 // Purpose: Get image (address) for document from tv params, content, or other
 
 // Получить изображение (адрес) для ресурса из tv параметров, контента (или другого поля)
@@ -43,7 +43,7 @@ Add snippet getImage
 //  [[getImage? &id=`32` &tv=`image,photos=rand:0=/name/i;0` &rand=`1` &data=`/images/image.jpg`  ]] тоже самое, но с условием, что в этом поле есть "name" (regexp)
 //  [[getImage? &id=`32` &tv=`image,photos=rand:2=/картинка/i;0` &rand=`1` &data=`/images/image.jpg`  ]] -- с условием, что в названии (3е поле) есть "картинка" (regexp)
 //  [[getImage? &id=`32` &tv=`image,photos=rand:2=Слайд;0` &rand=`1` &data=`/images/image.jpg`  ]] -- с условием, что название равно "Слайд"
-
+//  <meta property="og:image" content="[[getImage? &tv=`image` &id=`[*id*]` &fullUrl=`1` ]]" />  -- Вывести полную ссылку для локального изображения
 if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getImage/getImage.php")) {
  include_once($includeFile);
  if (class_exists("getImage")) {
