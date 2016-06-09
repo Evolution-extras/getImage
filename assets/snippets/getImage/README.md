@@ -6,7 +6,7 @@ Add snippet getImage
 ```
 // Script Name: GetImage version 2.4 (modx evo 1.xx)
 // Creation Date: 30.05.2013
-// Last Modified: 26.06.2014
+// Last Modified: 09.06.2016
 // Autor: Sergey Davydov <webmaster@sdcollection.com>
 // Purpose: Get image (address) for document from tv params, content, or other
 
