@@ -17,6 +17,7 @@
 &save      |  ""                |  не возвращать, сохранить в указанный плейсхолдер
 &out       | "%s"               |  Вернуть в формате. %s - будет заменено на полученный результат [2.2]
 &fullUrl   | "false"            |  Использовать полный адрес изображения, если расположен локально [2.4]
+&runSnippet| "false"            | Выполнить сниппет для обработки каждого найденного значения, формат строки как при обычном вызове, но без ограничивающих скобок, можно использовать другие кавычки. Для подстановки значения использовать %s [2.6]
 
 ###Примеры:
 Вызов   |  Описание
@@ -37,3 +38,4 @@
 ```[[getImage? &id=`32` &tv=`image,photos=rand:2=Слайд;0` &rand=`1` &data=`/images/image.jpg`  ]]``` |  с условием, что название равно "Слайд"
 ```<meta property="og:image" content="[[getImage? &tv=`image` &id=`[*id*]` &fullUrl=`1` ]]" />```  |  Вывести полную ссылку для локального изображения в meta
 ```<img src="[[phpthumb? &input=`[[getImage? &data=`[[ddGetMultipleField? &docField=`gallery` &columns=`0` &totalRows=`1` &docId=`[+id+]`]]` &tv=`image` &id=`[+id+]` &order=`data,tv,document`]]` &options=`w=300,h=300`]]" alt="[+pagetitle:specialchar+]" />``` | Полный пример вызова для элемента ditto. Используется phpthumb. Приоритет (параметр &order) получения изображения через multiField (соответственно результат сниппета в параметр &data)
+```[[getImage? &tv=`image,photos` &id=`[+id+]` &runSnippet=` phpthumb? &input='%s' &options='w=300,h=300' `  &out=`<a href="[(site_url)][~[+id+]~]" class="image"  title="[+pagetitle:specialchar+]"><img src="%s" alt="[+pagetitle:specialchar+]" /></a>`]]``` | Другой полный пример для ditto. Запуск спиппета для обработки найденного значения. В отличие от предыдущего примера, при пустом результате ничего не выведет. 

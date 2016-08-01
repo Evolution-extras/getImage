@@ -5,7 +5,7 @@
  * Получить изображение (адрес) для ресурса из tv параметров, контента (или другого поля)
  *
  * @category  snippet
- * @version  2.5
+ * @version       2.6
  * @license  http://www.gnu.org/copyleft/gpl.html GNU Public License (GPL)
  * @internal @properties
  * @internal @modx_category Utils
@@ -14,7 +14,7 @@
  * @documentation https://github.com/Evolution-extras/getImage/blob/master/assets/snippets/getImage/README.md
  * @reportissues https://github.com/Evolution-extras/getImage/
  * @author  Sergey Davydov <webmaster@sdcollection.com>
- * @lastupdate 09.06.2016
+ * @lastupdate    01.08.2016
  */
 
 if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getImage/getImage.php")) {
@@ -32,7 +32,8 @@ if (file_exists($includeFile = $modx->config['base_path']."assets/snippets/getIm
 			"rand" => isset($rand) ? $rand : "",
 			"all" => isset($all) ? $all : "",
 			"out" => isset($out) ? $out : "%s",
-			"fullUrl" => isset($fullUrl) ? $fullUrl : false)
+			"fullUrl" => isset($fullUrl) ? $fullUrl : false,
+			"runSnippet" => isset($runSnippet)?$runSnippet : false)
 		);
 		if (empty($save)) return $getImage->result();	else $modx->setPlaceholder($save, $getImage->result());
 	} else {

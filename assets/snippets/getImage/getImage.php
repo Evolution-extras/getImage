@@ -2,12 +2,12 @@
 if (!defined('MODX_BASE_PATH')) die('What are you doing? Get out of here!'); 
 /*
  * Main class for use in snippet getImage 
- * @version 2.5
+ * @version       2.6
  * @documentation README.md
  * @documentation https://github.com/Evolution-extras/getImage/blob/master/assets/snippets/getImage/README.md
- * @repository https://github.com/Evolution-extras/getImage/
- * @author  Sergey Davydov <webmaster@sdcollection.com>
- * @lastupdate 09.06.2016
+ * @repository    https://github.com/Evolution-extras/getImage/
+ * @author        Sergey Davydov <webmaster@sdcollection.com>
+ * @lastupdate    01.08.2016
  */
 
 class getImage {
@@ -28,7 +28,8 @@ class getImage {
 			"rand" => false,
 			"all" => false,
 			"out" => "%s",
-			"fullUrl" => isset($fullUrl) ? $fullUrl : false
+			"fullUrl" => isset($fullUrl) ? $fullUrl : false,
+			"runSnippet" => false
 		);
 		foreach ($pd as $k => $v) if (!isset($p[$k])) $p[$k] = $v;
 		$this->p =& $p;
@@ -86,6 +87,8 @@ class getImage {
 	}
 
 	function result() {
+		global $modx;
+		$result = '';
 		if ($this->p["fullUrl"] and $this->p["urlOnly"]) {
 			foreach ($this->result as &$data)
 				if (!preg_match("/^(http|ftp|data):/i", trim($data)))
@@ -95,6 +98,7 @@ class getImage {
 		else if ($this->p["rand"]) $result = $this->result[rand(0, count($this->result) - 1)];
 		else if ($this->p["all"])
 			$result = implode($this->p["urlOnly"] ? "" : ",", $this->result);
+		if ($result && $this->p["runSnippet"]) $result = $modx->evalSnippets("[[".sprintf($this->p["runSnippet"],$result)."]]");
 		return $result ? str_replace("%s", $result, $this->p["out"]) : "";
 	}
 
